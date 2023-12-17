@@ -111,7 +111,7 @@ int rolldie(int player)
     c = getchar();
     fflush(stdin);
     
-#if 1
+#if 0
     if (c == 'g')
         printGrades(player);
 #endif
@@ -122,7 +122,7 @@ int rolldie(int player)
 //action code when a player stays at a node
 void actionNode(int player)
 {
-	void *boardPtr = smmdb_getData(cur_player[player].position);
+	void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
 	//int type = smmObj_getNodeType(cur_player[player].position);
 	int type = smmObj_getNodeType(boardPtr);
 	char *name = smmObj_getNodeName(boardPtr);
@@ -132,12 +132,13 @@ void actionNode(int player)
     {
         //case lecture:
         case SMMNODE_TYPE_LECTURE:
-        	if(cur_player[player].energy >= smmObj_getNodeEnergy(cur_player[player].position))
+        	if(cur_player[player].energy >= smmObj_getNodeEnergy(boardPtr))
         	{
         	cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
         	cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
+        	
         	//grade generation
-        	gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, ??);
+        	gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, smmObj_getNodeEnergy(boardPtr));
         	smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
             }
         	break;
